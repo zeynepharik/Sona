@@ -1,0 +1,70 @@
+﻿@model Reservation
+
+<div id="reservationModal" class="">
+    <div class="modal-content">
+      
+        <h2>Rezervasyon Bilgileri</h2>
+
+        <p id="reservationDetails" class="rezervasyondetay">
+            <span>Ödemenizi otelde tamamlayın.</span>
+            <span>Makbuz No: @Model.RoomId</span>
+            <span>Giriş Tarihi: @Model.CheckInDate.ToShortDateString()</span>
+            <span>Çıkış Tarihi: @Model.CheckOutDate.ToShortDateString()</span>
+            <span>Konuk Sayısı: @Model.NumberOfGuests</span>
+            <span>Toplam Fiyat: @Model.TotalPrice.ToString("F2")</span>
+        </p>
+    </div>
+</div>
+
+<style>
+    
+    .modal {
+        display: block;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    .close-btn {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+
+<script>
+    
+    var modal = document.getElementById("reservationModal");
+    var span = document.getElementsByClassName("close-btn")[0];
+
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>

@@ -1,0 +1,82 @@
+﻿@model SONA.Models.RoomSearchViewModel
+
+@{
+    ViewData["Title"] = "Search Rooms";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Search Rooms</h1>
+
+@if (Model != null)
+{
+    <form method="post" action="/Reservation/SearchRooms">
+        <label for="checkInDate">Check-In Date:</label>
+        <input type="date" name="CheckInDate" value="@Model.CheckInDate.ToString("yyyy-MM-dd")" required />
+
+        <label for="checkOutDate">Check-Out Date:</label>
+        <input type="date" name="CheckOutDate" value="@Model.CheckOutDate.ToString("yyyy-MM-dd")" required />
+
+        <label for="numberOfGuests">Number of Guests:</label>
+        <input type="number" name="NumberOfGuests" value="@Model.NumberOfGuests" required />
+
+        <button type="submit">Search Rooms</button>
+    </form>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Message"]
+        </div>
+    }
+
+    @if (Model.AvailableRooms != null && Model.AvailableRooms.Any())
+    {
+        <form id="reservationForm" method="post" action="/Reservation/BookRoom">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Room Number</th>
+                        <th>Room Type</th>
+                        <th>Base Price</th>
+                        <th>Total Price</th>
+                        <th>Select</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var room in Model.AvailableRooms)
+                    {
+                        var totalPrice = room.RoomType.BasePrice * Model.Nights;
+                        <tr>
+                            <td>@room.RoomNumber</td>
+                            <td>@room.RoomType.TypeName</td>
+                            <td>@room.RoomType.BasePrice.ToString("C")</td> 
+                            <td>@totalPrice.ToString("C")</td> 
+                            <td>
+                                <input type="radio" name="SelectedRoomId" value="@room.RoomId" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div>
+                <input type="checkbox" id="paymentCheckbox" /> Pay at Hotel
+            </div>
+            <button type="submit" id="completeReservationButton" disabled>Complete Reservation</button>
+        </form>
+
+        <script>
+            document.getElementById('paymentCheckbox').addEventListener('change', function () {
+                document.getElementById('completeReservationButton').disabled = !this.checked;
+            });
+        </script>
+    }
+    else
+    {
+        <p>No rooms available for the selected criteria.</p>
+    }
+}
+else
+{
+    <p>Model is null. Please try again later.</p>
+}
